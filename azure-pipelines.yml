@@ -56,7 +56,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
     variables:
-      myVarFromJobA: $[ dependencies.Build.outputs['Build.setvarStep.myOutputVar'] ]  # map in the variable remember, expressions require single quotes
+      myVarFromJobA: $[ dependencies.Build.outputs['setvarStep.myOutputVar'] ]  # map in the variable remember, expressions require single quotes
     environment: 'jks05cpipelinesjavascriptdocker.default'
     strategy:
       runOnce:
