@@ -30,6 +30,10 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    - powershell: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the value"
+      name: setvarStep
+    - script: echo $(setvarStep.myOutputVar)
+      name: echovar
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -51,6 +55,8 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
+    variables:
+      myVarFromJobA: $[ dependencies.A.outputs['setvarStep.myOutputVar'] ]  # map in the variable remember, expressions require single quotes
     environment: 'jks05cpipelinesjavascriptdocker.default'
     strategy:
       runOnce:
@@ -74,3 +80,5 @@ stages:
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
+          - script: echo $(myVarFromJobA)
+            name: echovar                
